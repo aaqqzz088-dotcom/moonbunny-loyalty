@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Moonbunny Loyalty Test</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff8ef;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .box {
+      width: min(90%, 500px);
+      margin: 40px auto;
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #status {
+      white-space: pre-line;
+      line-height: 1.7;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h1>MOONBUNNY</h1>
+
+    <p>กำลังเชื่อมต่อ LINE...</p>
+
+    <div id="status">
+      กำลังเริ่มระบบ
+    </div>
+
+  </div>
+
+  <script>
+
+    const LIFF_ID = "2011648778-mfZBuqbb";
+
+    async function start() {
+
+      try {
+
+        document.getElementById("status").textContent =
+          "1/4 กำลังเรียก LIFF...";
+
+        await liff.init({
+          liffId: LIFF_ID
+        });
+
+        document.getElementById("status").textContent =
+          "2/4 LIFF เริ่มต้นสำเร็จ\n\n" +
+          "กำลังตรวจสอบ Login...";
+
+        console.log("LIFF initialized");
+
+        if (!liff.isLoggedIn()) {
+
+          document.getElementById("status").textContent =
+            "3/4 ยังไม่ได้ Login\n\n" +
+            "กำลังเปิด LINE Login...";
+
+          liff.login();
+
+          return;
+        }
+
+        document.getElementById("status").textContent =
+          "3/4 Login สำเร็จ\n\n" +
+          "กำลังอ่านข้อมูล LINE...";
+
+        const profile = await liff.getProfile();
+
+        document.getElementById("status").textContent =
+          "4/4 สำเร็จ ✅\n\n" +
+          "ชื่อ: " + profile.displayName + "\n\n" +
+          "LINE User ID:\n" +
+          profile.userId;
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("status").textContent =
+          "❌ LIFF Error\n\n" +
+          (error.message || error);
+
+      }
+
+    }
+
+    start();
+
+  </script>
+
+</body>
+</html>
